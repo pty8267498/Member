@@ -1,0 +1,56 @@
+// 基础设置页样式
+.htmlPage {
+  .headbg {
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    border-radius: 5px;
+    padding: 0 2rem;
+    h2 {
+      font-size: 1.5rem;
+      padding: 0.5rem 0;
+    }
+    p {
+      color: #999999;
+      padding-bottom: 1rem;
+      font-size: .8;
+    }
+  }
+  .el-button {
+    // width: 100px;
+  }
+  .contBox {
+    margin-top: 1rem;
+    height: auto;
+    background: #ffffff;
+    padding: 1.4rem;
+    box-sizing: border-box;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    .el-form {
+      margin: 2rem 0;
+      .el-input,
+      .el-select {
+        width: 220px;
+      }
+    }
+  }
+}
+@media screen and (max-width: 600px) {
+.htmlPage {
+  .contBox {
+    .el-button {
+      margin-bottom: 1rem;
+      margin-left: 0;
+    }
+    .el-form {
+      .el-button {
+        width: 80px;
+      }
+      .el-input,
+      .el-select {
+        width: 150px;
+      }
+    }
+  }
+}
+}

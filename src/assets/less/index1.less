@@ -1,0 +1,203 @@
+/* 主体页样式 */
+.wrapper {
+  height: 100%;
+  overflow-y: hidden;
+  background-color: #f5f7f9;
+}
+.container-left {
+  background-color: #545c64;
+  transition: left 0.23s ease-in-out;
+  height: 100%;
+}
+.container-left-wrap {
+  overflow-x: hidden !important;
+}
+
+.container-left .svg-icon {
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.container-left:not(.slide-hide) {
+  width: 200px;
+}
+
+.container-left.slide-hide {
+  .logo img {
+      display: none;
+  }
+  .logo span {
+      display: inline-block;
+  }
+}
+
+.menu {
+  width: 100% !important;
+}
+
+/*.menu::-webkit-scrollbar{*/
+/*display: none;*/
+/*}*/
+
+.header {
+  position: relative;
+  text-align: left;
+  font-size: 12px;
+  line-height: $header-height;
+  border-bottom: 1px solid #d8dce5;
+  background-color: #fff;
+}
+
+.header .el-dropdown {
+  @include fxied-center;
+}
+
+.logo {
+  display: block;
+  width: 100%;
+  line-height: 80px;
+  text-align: center;
+  color: #fff;
+  transition: display 0.7s ease-in-out;
+  img {
+      vertical-align: middle;
+  }
+  span {
+      display: none;
+  }
+}
+
+.header-left {
+  display: inline-block;
+  height: $header-height;
+  overflow: hidden;
+}
+
+.header-tabs-box {
+  display: inline-block;
+  height: $header-height;
+  max-width: 60%;
+  overflow: hidden;
+}
+
+.header-right {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  display: flex;
+  width: 80px;
+  height: 100%;
+  margin-left: 10px;
+  .el-dropdown {
+      display: flex;
+      cursor: pointer;
+  }
+  span {
+      display: inline-block;
+      @include text-overflow;
+  }
+  i {
+      line-height: $header-height;
+      margin-top: 2px;
+  }
+}
+
+.app-levelbar {
+  margin-left: 20px;
+  line-height: 57px !important;
+}
+
+/*宽屏时出现*/
+.slide-toggle {
+  display: inline-block;
+  height: $header-height;
+  line-height: $header-height;
+  text-align: center;
+  cursor: pointer;
+}
+
+.slide-toggle span {
+  display: inline-block;
+  width: 2px;
+  height: 12px;
+  background-color: rgba(135, 141, 153, 0.8);
+  margin-left: 5px;
+}
+.slide-toggle-open span {
+  display: block;
+  margin-left: 4px;
+  margin-top: 4px;
+  width: 16px;
+  height: 2px;
+}
+.slide-toggle-open {
+  padding-top: 17px;
+}
+
+@media screen and (min-width: 768px) {
+  .main-mask {
+      display: none;
+  }
+}
+
+/*.slide-hide {*/
+/*width: 64px !important;*/
+/*}*/
+
+@media screen and (max-width: 768px) {
+  .slide-hide.slide-in-left {
+      -webkit-transform: translate3d(64px, 0, 0) !important;
+      transform: translate3d(64px, 0, 0) !important;
+  }
+  .container-left.slide-hide.slide-in-left {
+      left: -64px;
+      width: 64px;
+  }
+  .container-left.slide-in-left {
+      left: 0;
+  }
+  .container-left {
+      margin-right: 0;
+      opacity: 1;
+      position: absolute !important;
+      top: 0;
+      left: -225px;
+      z-index: 10;
+      padding: 0;
+  }
+
+  .container-box.slide-in-left {
+      min-width: 0;
+      opacity: 1;
+      -webkit-transform: translate3d(187px, 0, 0);
+      transform: translate3d(187px, 0, 0);
+      overflow: initial;
+  }
+  .header-toggle {
+      display: block;
+      /*background-color: #26a2ff;*/
+      border-radius: 4px;
+      /*border: 1px solid #fff;*/
+      height: 40px;
+      margin: 10px 0;
+      padding: 2px 6px;
+      outline: none;
+      width: 40px;
+      z-index: 10;
+  }
+
+  .header-toggle span {
+      display: block;
+      width: 100%;
+      height: 4px;
+      margin: 5px auto;
+      background-color: rgba(135, 141, 153, 0.8);
+  }
+
+  .logo {
+      display: none;
+  }
+  .slide-toggle {
+      display: none;
+  }
+}
