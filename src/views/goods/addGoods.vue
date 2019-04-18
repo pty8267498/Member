@@ -11,79 +11,75 @@
       <el-col :span="24">
         <el-button type="primary" size="small" icon="el-icon-back" @click="goBack">商品列表</el-button>
       </el-col>
+      <el-col :span="24" class="mt20">
+        <el-button type="primary" size="small" @click="goodsInfo">商品信息</el-button>
+        <el-button type="success" size="small" @click="isShow=false">推广奖金</el-button>
+      </el-col>
       <el-col :span="24">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="商品信息" name="first">
-            <el-form :model="form" ref="form" size="small" label-width="100px">
-              <el-form-item label="商品标题">
-                <el-input v-model="form.value" placeholder="商品标题"></el-input>
-              </el-form-item>
-              <el-form-item label="商品显示图片">
-                <el-upload
-                  class="upload-demo"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :before-remove="beforeRemove"
-                  multiple
-                  :limit="3"
-                  list-type="picture"
-                  :on-exceed="handleExceed"
-                  :file-list="fileList">
-                  <el-button size="small" type="primary">点击上传</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
-              </el-form-item>
-              <el-form-item label="商品价格">
-                <el-input v-model="form.value" placeholder="商品价格">
-                  <template slot="prepend">¥</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="商品备注">
-                <el-input v-model="form.value" type="textarea" placeholder="商品备注"></el-input>
-              </el-form-item>
-              <el-form-item label="排序">
-                <el-input v-model="form.value" placeholder="排序"></el-input>
-              </el-form-item>
-              <el-form-item label="是否开启">
-                <el-radio v-model="form.radio" label="1">开启</el-radio>
-                <el-radio v-model="form.radio" label="2">关闭</el-radio>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="onSubmit">提交</el-button>
-                <el-button>重置</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-          <el-tab-pane label="推广奖金" name="second">
-            <el-form :model="form2" ref="form2" label-width="140px" size="small">
-              <el-form-item label="直推奖金">
-                <el-input v-model="form2.value" placeholder="直推奖金">
-                  <template slot="prepend">¥</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="二代奖金">
-                <el-input v-model="form2.value" placeholder="二代奖金">
-                  <template slot="prepend">¥</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="金牌学员 团队奖金">
-                <el-input v-model="form2.value" placeholder="金牌学员 团队奖金">
-                  <template slot="prepend">¥</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="银牌学员 团队奖金">
-                <el-input v-model="form2.value" placeholder="银牌学员 团队奖金">
-                  <template slot="prepend">¥</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="onSubmit">提交</el-button>
-                <el-button>重置</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-        </el-tabs>
+        <el-form :model="form" ref="form" size="small" label-width="140px">
+          <div v-show="isShow">
+            <el-form-item label="商品标题" prop="goodTitle">
+              <el-input v-model="form.goodTitle" placeholder="商品标题"></el-input>
+            </el-form-item>
+            <el-form-item label="商品显示图片">
+              <el-upload
+                class="upload-demo"
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                list-type="picture"
+                :on-exceed="handleExceed"
+                :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="商品价格" prop="goodPrice">
+              <el-input v-model="form.goodPrice" placeholder="商品价格">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="商品备注" prop="goodRemark">
+              <el-input v-model="form.goodRemark" type="textarea" placeholder="商品备注"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" prop="goodOrder">
+              <el-input v-model="form.goodOrder" placeholder="排序"></el-input>
+            </el-form-item>
+            <el-form-item label="是否开启" prop="goodIsEnable">
+              <el-radio v-model="form.goodIsEnable" :label="true">开启</el-radio>
+              <el-radio v-model="form.goodIsEnable" :label="false">关闭</el-radio>
+            </el-form-item>
+          </div>
+          <div v-show="!isShow">
+            <el-form-item label="直推奖金" prop="firstBonus">
+              <el-input v-model="form.firstBonus" placeholder="直推奖金">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="二代奖金" prop="twoBonus">
+              <el-input v-model="form.twoBonus" placeholder="二代奖金">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="金牌学员 团队奖金" prop="goldTeam">
+              <el-input v-model="form.goldTeam" placeholder="金牌学员 团队奖金">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="银牌学员 团队奖金" prop="silverTeam">
+              <el-input v-model="form.silverTeam" placeholder="银牌学员 团队奖金">
+                <template slot="prepend">¥</template>
+              </el-input>
+            </el-form-item>
+          </div>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">提交</el-button>
+            <el-button @click="resetForm('form')">重置</el-button>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
   </div>
@@ -95,32 +91,25 @@
       return {
         curPage: 1,   // 当前页
         pageSize: 10,   // 每页显示条数
-        total: 30,   // 总条数
+        total: 0,   // 总条数
         dialog: false,
+        isShow: true,   // 默认显示商品信息
         title: '添加商品',
-        activeName: 'first',
         form: {
-          value: '',
-          radio: '1'  // 是否开启
+          id: '',   // 商品ID
+          goodTitle: '',   // 商品标题
+          goodImg: '',    // 商品图片
+          goodPrice: 0,   // 商品价格
+          goodRemark: '', // 商品备注
+          goodOrder: 0,   // 商品序号
+          goodIsEnable: true,   // 是否开启
+          createUser: '',   // 创建商品的用户id
+          editUser: '',  // 编辑商品的用户id
+          firstBonus: 0,   // 直推奖金
+          twoBonus: 0,    //  二代奖金
+          goldTeam: 0,   //  金牌会员 团队奖金
+          silverTeam: 0  // 银牌会员 团队奖金
         },
-        form2: {
-          value: '',
-          type: 1,
-          type2: 1,
-          radio: '1',
-        },
-        options: [
-          {
-            label: '选择',
-            value: ''
-          },{
-            label: '开启',
-            value: 1,
-          },{
-            label: '关闭',
-            value: 2
-          }
-        ],
         fileList: []
       }
     },
@@ -139,6 +128,9 @@
         this.$router.push({
           path: '/goodsManage'
         })
+      },
+      goodsInfo() {  // 点击商品信息
+        this.isShow = true;
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
@@ -159,22 +151,34 @@
       handleCurrentChange(value) {   // 切换当前页
         this.curPage = value;
       },
-      handleClick(tab, event) { // tab  切换
-        console.log(tab, event);
+      onSubmit() {  // 添加/修改商品信息
+        let that = this;
+        this.$axios.post('/Api/good/UpModel', this.form).then(response => {
+          if (response.Code == 200) {
+            that.$message({
+              type: 'success',
+              message: response.Message
+            })
+          } else {
+            that.$message.error(response.Message);
+          }
+        }).catch(response => {
+          console.log(response);
+        })
       },
-      onSubmit() {  // 搜索列表
-
-      },
+      resetForm(formName) {  // 重置表单
+        this.$refs[formName].resetFields();
+      }
     }
   }
 </script>
 
 <style lang="less" scoped>
 @import '../member/member.less';
-.el-tabs {
-  margin-top: 1rem;
-  .el-form {
-    max-width: 600px;
-  }
+.mt20 {
+  margin: 20px 0;
+}
+.el-form {
+  max-width: 600px;
 }
 </style>

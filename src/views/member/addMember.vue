@@ -14,7 +14,7 @@
       <el-col :span="24">
         <el-form :model="form" ref="form" :rules="rules" label-width="130px" size="small">
           <el-form-item label="学员编号" prop="f_number">
-            <el-input v-model="form.f_number" placeholder="学员编号"></el-input>
+            <el-input v-model="form.id" placeholder="学员编号"></el-input>
           </el-form-item>
           <el-form-item label="登录密码" prop="f_passWord">
             <el-input type="password" v-model="form.f_passWord" placeholder="会员密码"></el-input>
@@ -32,7 +32,6 @@
           <el-form-item label="会员级别" prop="f_gradeId">
             <el-select v-model="form.f_gradeId" placeholder="请选择会员级别">
               <el-option v-for="(item,index) in levelArr" :key="index" :label="item.g_name" :value="item.id"></el-option>
-              <!-- <el-option label="银牌会员" :value="2"></el-option> -->
             </el-select>
           </el-form-item>
           <el-form-item label="手机号(登录帐号)" prop="f_phone">
@@ -95,7 +94,7 @@
       return {
         title: '添加会员',
         form: {
-          f_number: '',   //  学员编号
+          id: '',   //  学员编号
           f_name: '',  // 姓名
           f_address: '',  // 地址
           f_breakCard: '',  // 银行卡号
