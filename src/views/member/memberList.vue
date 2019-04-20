@@ -29,12 +29,13 @@
       </el-col>
       <el-col :span="24">
         <el-table :data="tableData" border style="width: 100%;">
-          <el-table-column prop="id" label="序号" width="50"></el-table-column>
-          <el-table-column prop="f_number" label="学员编号" width="100"></el-table-column>
+          
+          <el-table-column prop="id" label="学员编号" width="100"></el-table-column>
           <el-table-column prop="f_name" label="姓名" width="150"></el-table-column>
           <el-table-column prop="f_phone" label="手机" width="120"></el-table-column>
           <el-table-column prop="recom_username" label="推荐人"></el-table-column>
-          <el-table-column prop="addtime" label="注册日期"></el-table-column>
+          <el-table-column prop="f_createTime" label="注册日期"></el-table-column>
+          <el-table-column prop="f_editTime" label="审核日期"></el-table-column>
           <el-table-column label="审核状态" width="130">
             <template slot-scope="scope">
               <el-tag type="success">{{scope.row.f_isEnd}}</el-tag>
