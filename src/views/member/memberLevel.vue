@@ -159,9 +159,12 @@
         this.getTablelist();
       },
       onSearch() {  // 搜索列表
-        // return this.tableData.filter(function(item){
-        //   return item.g_status == true;
-        // })
+      
+      let that = this;
+        return this.tableData.filter(function(item){
+          debugger;
+          return item.g_status == true;
+        });
       },
       getTablelist() {  // 获取会员级别的列表
         let that = this;

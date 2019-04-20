@@ -115,7 +115,7 @@
         levelArr: [],   // 会员级别数据
         rules: {
           f_name: [{required: true, message: '请输入姓名', trigger: 'blur'}],
-          f_number: [{required: true, message: '请输入学员编号', trigger: 'blur'}],
+          id: [{required: true, message: '请输入学员编号', trigger: 'blur'}],
           f_gradeId: [{required: true, message: '请选择会员级别', trigger: 'change'}],
           f_phone: [{required: true, message: '请输入手机号', trigger: 'blur'},
                     {type: 'number', message: '手机号必须为数字', trigger: 'blur'}],
