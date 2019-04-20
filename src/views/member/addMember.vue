@@ -37,6 +37,9 @@
           <el-form-item label="手机号(登录帐号)" prop="f_phone">
             <el-input v-model.number="form.f_phone" :maxlength="11" placeholder="手机号(登录帐号)"></el-input>
           </el-form-item>
+          <el-form-item label="推荐人手机号" prop="PidPhone">
+            <el-input v-model="form.PidPhone" :maxlength="11" placeholder="推荐人手机号"></el-input>
+          </el-form-item>
           <el-form-item label="身份证号码" prop="f_card">
             <el-input v-model="form.f_card"  :maxlength="18" placeholder="身份证号码"></el-input>
           </el-form-item>
@@ -108,6 +111,7 @@
           f_passWord: '',   // 密码
           f_passWord2: '',  // 确认密码
           f_phone: '',   // 手机号
+          PidPhone: '',  // 推荐人手机号
           f_sex: '男',  // 性别
           f_createUser: '',  // 添加登录时的id
           f_editUser: '',  // 修改的ID
@@ -135,7 +139,8 @@
       this.form.f_createUser =localStorage.getItem('userId');
     },
     mounted() {
-      this.getLevellist();
+      this.getLevellist(); // 获取级别
+      this.getInfolist();  // 获取用户信息
     },
     methods: {
       onSubmit(formName) {  // 提交
@@ -143,11 +148,12 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             that.$axios.post('/Api/member/ActionSubmit',that.form).then(response => {
-              if (response.Code == 200) {
+              if (response.Code == 200 && response.Success) {
                 that.$message({
                   type: 'success',
                   message: response.Message
                 })
+                that.goBack();
               } else {
                 that.$message.error(response.Message);
               }
@@ -168,11 +174,24 @@
           path: '/memberList'
         })
       },
-      getLevellist() {  // 获取会员级别的列表
+      getLevellist() {  // 获取会员列表数据
         let that = this;
         this.$axios.post('/Api/memberGrade/GetModelList').then(response => {
           if (response.Code == 200) {
             that.levelArr = response.Data;
+
+          } else {
+            that.$message.error(response.Message);
+          }
+        }).catch(response => {
+          console.log(response);
+        })
+      },
+      getInfolist () {  // 获取用户信息数据
+        let that = this;
+        this.$axios.post('/Api/member/GetModelById?id='+this.form.f_editUser).then(response => {
+          if (response.Code == 200 && response.Success) {
+            that.form = response.Data;
           } else {
             that.$message.error(response.Message);
           }

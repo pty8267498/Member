@@ -29,28 +29,28 @@
       </el-col>
       <el-col :span="24">
         <el-table :data="tableData" border style="width: 100%;">
-          
           <el-table-column prop="id" label="学员编号" width="100"></el-table-column>
           <el-table-column prop="f_name" label="姓名" width="150"></el-table-column>
           <el-table-column prop="f_phone" label="手机" width="120"></el-table-column>
-          <el-table-column prop="recom_username" label="推荐人"></el-table-column>
+          <el-table-column prop="f_pidName" label="推荐人"></el-table-column>
           <el-table-column prop="f_createTime" label="注册日期"></el-table-column>
           <el-table-column prop="f_editTime" label="审核日期"></el-table-column>
           <el-table-column label="审核状态" width="130">
             <template slot-scope="scope">
-              <el-tag type="success">{{scope.row.f_isEnd}}</el-tag>
+              <el-tag type="success">{{scope.row.f_status}}</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="number" label="状态" width="100">
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.f_isEnd==1">开启</el-tag>
-              <el-tag type="danger" v-if="scope.row.f_isEnd==2">关闭</el-tag>
+              <el-tag type="success" v-if="scope.row.f_isEnd">开启</el-tag>
+              <el-tag type="danger" v-if="!scope.row.f_isEnd">关闭</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right" width="180">
             <template slot-scope="scope">
               <el-button @click="recharge(scope.row)" type="text" size="small">奖学金充值</el-button>
               <el-button type="text" size="small" @click="editInfo(scope.row)">修改</el-button>
+              <el-button v-if="scope.row.f_status=='待审核'" type="text" size="small" @click="checkInfo(scope.row)">审核</el-button>
               <el-button type="text" size="small" @click="deleteInfo(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -76,17 +76,27 @@
         </div>
       </el-col>
     </el-row>
+    <!-- 审核弹窗 -->
+    <el-dialog title="审核" :visible.sync="dialog1" width="370px" class="recharge">
+      <el-form :model="formArr" ref="formArr" label-width="80px" size="small">
+        <el-form-item label="">
+          <el-radio v-model="formArr.status" label="审核通过">审核通过</el-radio>
+          <el-radio v-model="formArr.status" label="未通过">未通过</el-radio>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="checkForm">提交</el-button>
+          <el-button @click="dialog1=false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--奖学金充值弹窗-->
     <el-dialog title="奖学金充值" :visible.sync="dialog" width="370px" class="recharge">
       <el-form :model="form2" ref="form2" label-width="100px" size="small">
         <el-form-item label="充值账号">
-          <el-input v-model="form2.value" readonly></el-input>
+          <el-input v-model="form2.id" readonly></el-input>
         </el-form-item>
         <el-form-item label="账号手机号">
-          <el-input v-model="form2.value" readonly></el-input>
-        </el-form-item>
-        <el-form-item label="商品积分">
-          <el-input v-model="form2.value" readonly></el-input>
+          <el-input v-model="form2.phone" readonly></el-input>
         </el-form-item>
         <el-form-item label="奖学金">
           <el-input v-model="form2.value" readonly></el-input>
@@ -103,7 +113,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="金额">
-          <el-input v-model="form2.value"></el-input>
+          <el-input v-model="form2.score"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit1">提交</el-button>
@@ -113,7 +123,6 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
   export default {
     data() {
@@ -122,44 +131,23 @@
         pageSize: 10,   // 每页显示条数
         total: 0,   // 总条数
         dialog: false,
+        dialog1: false,
         form: {
           isEnd: '', // 是否开启
           keyWord: ''  // 搜索关键字
         },
-        form2: {
+        formArr: {  // 审核数据
+          status: '审核通过',
+          id: ''
+        },
+        form2: { // 奖学金充值数据
           value: '',
           type: 1,
-          type2: 1
+          type2: 1,
+          UserId: '',  // 用户登录id
         },
-        options: [
-          {
-            label: '是否开启',
-            value: ''
-          },{
-            label: '是',
-            value: 1,
-          },{
-            label: '否',
-            value: 2
-          }
-        ],
         tableDataAll: [],   // 返回的所有数据
-        tableData: [
-          {
-            "id": 60,
-            "username": "709466",
-            "name": "苏秀贞",
-            "telephone": "18867917128",
-            "ccoic_name": "-",
-            "level_name": "银牌学员",
-            "recom_telephone": "13757988223",
-            "recom_username": "700073",
-            "ip": "115.210.46.28",
-            "addtime": "2019-03-12 14:19:46",
-            "auth_status": "审核已通过",
-            "status": 1
-          }
-        ]
+        tableData: []
       }
     },
     mounted() {
@@ -211,8 +199,43 @@
         this.curPage = 1;
         this.getTablelist();
       },
+      checkInfo(obj) {  // 点击审核按钮
+        this.dialog1 = true;
+        this.formArr.id = obj.id;
+      },
+      checkForm() {  // 审核状态提交
+        let that = this;
+        this.$axios.post('/Api/member/CheckMember',this.formArr).then(response => {
+          if (response.Code == 200 && response.Success) {
+            that.$message({
+              type: 'success',
+              message: response.Message
+            })
+            that.dialog1 = false;
+            that.formArr.radio = '审核通过';
+            that.getTablelist();
+          } else {
+            that.$message.error(response.Message);
+          }
+        }).catch(response => {
+          console.log(response);
+        })
+      },
       onSubmit1() {  // 奖学金充值 提交
-
+        let that = this;
+        this.$axios.post('').then(response => {
+          if (response.Code == 200 && response.Success) {
+            that.$message({
+              type: 'success',
+              message: response.Message
+            })
+            that.getTablelist();
+          } else {
+            that.$message.error(response.Message);
+          }
+        }).catch(response => {
+          console.log(response);
+        })
       },
       recharge(obj) { // 点击每一行的奖学金充值
         this.dialog = true;
@@ -231,15 +254,26 @@
         })
       },
       deleteInfo(obj) {  // 点击每一行的删除
+        let that = this;
         this.$confirm('确定要删除该条信息吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          that.$axios.post('/Api/member/delMember'+obj.id).then(response => {
+            if (response.Code == 200) {
+              that.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              that.getTablelist();
+            } else {
+              that.$message.error(response.Message);
+            }
+          }).catch(response => {
+            console.log(response);
+          })
+
         }).catch(() => {
           this.$message({
             type: 'info',
