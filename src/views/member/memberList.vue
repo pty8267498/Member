@@ -91,33 +91,33 @@
     </el-dialog>
     <!--奖学金充值弹窗-->
     <el-dialog title="奖学金充值" :visible.sync="dialog" width="370px" class="recharge">
-      <el-form :model="form2" ref="form2" label-width="100px" size="small">
-        <el-form-item label="充值账号">
-          <el-input v-model="form2.id" readonly></el-input>
+      <el-form :model="form2" ref="form2" :rules="rules" label-width="100px" size="small">
+        <el-form-item label="充值账号" prop="memberId">
+          <el-input v-model="form2.memberId" readonly></el-input>
         </el-form-item>
-        <el-form-item label="账号手机号">
-          <el-input v-model="form2.phone" readonly></el-input>
+        <el-form-item label="账号手机号" prop="f_phone">
+          <el-input v-model="form2.f_phone" readonly></el-input>
         </el-form-item>
-        <el-form-item label="奖学金">
-          <el-input v-model="form2.value" readonly></el-input>
+        <el-form-item label="奖学金" prop="f_score">
+          <el-input v-model="form2.f_score" readonly></el-input>
         </el-form-item>
-        <el-form-item label="操作">
-          <el-select v-model="form2.type">
+        <el-form-item label="操作" prop="action">
+          <el-select v-model="form2.action">
             <el-option label="充值" :value="1"></el-option>
             <el-option label="扣除" :value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="类型" prop="type2">
           <el-select v-model="form2.type2">
             <el-option label="奖学金" :value="1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="金额">
+        <el-form-item label="金额" prop="score">
           <el-input v-model="form2.score"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit1">提交</el-button>
-          <el-button @click="dialog=false">取消</el-button>
+          <el-button type="primary" @click="onSubmit1('form2')">提交</el-button>
+          <el-button @click="resetForm('form2')">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -126,6 +126,17 @@
 <script>
   export default {
     data() {
+      const validateNum = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入金额'));
+        } else {
+          if (this.form2.score <= 0) {
+            callback(new Error('请输入大于0的金额'));
+          } else {
+            callback();
+          }
+        }
+      };
       return {
         curPage: 1,   // 当前页
         pageSize: 10,   // 每页显示条数
@@ -141,14 +152,23 @@
           id: ''
         },
         form2: { // 奖学金充值数据
-          value: '',
-          type: 1,
+          score: 0,  // 金额
+          action: 1,
           type2: 1,
+          f_score: '',  // 奖学金
+          f_phone: '', // 手机号
+          userName: '', // 用户名字
           UserId: '',  // 用户登录id
         },
         tableDataAll: [],   // 返回的所有数据
-        tableData: []
+        tableData: [],
+        rules: {
+          score: [{required: true, validator: validateNum, trigger: 'blur'}]
+        }
       }
+    },
+    created() {
+      this.form2.UserId = localStorage.getItem('userId');
     },
     mounted() {
       this.getTablelist();
@@ -221,24 +241,46 @@
           console.log(response);
         })
       },
-      onSubmit1() {  // 奖学金充值 提交
+      onSubmit1(formName) {  // 奖学金充值 提交
         let that = this;
-        this.$axios.post('').then(response => {
-          if (response.Code == 200 && response.Success) {
-            that.$message({
-              type: 'success',
-              message: response.Message
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            that.$axios.post('/Api/member/AddMemberSocre',{
+              UserId: that.form2.UserId,
+              memberId: that.form2.memberId,
+              score: that.form2.score,
+              userName: that.form2.userName,
+              action: that.form2.action
+            }).then(response => {
+              if (response.Code == 200 && response.Success) {
+                that.$message({
+                  type: 'success',
+                  message: response.Message
+                })
+                that.dialog = false;
+                that.getTablelist();
+              } else {
+                that.$message.error(response.Message);
+              }
+            }).catch(response => {
+              console.log(response);
             })
-            that.getTablelist();
           } else {
-            that.$message.error(response.Message);
+            console.log('error submit!!');
+            return false;
           }
-        }).catch(response => {
-          console.log(response);
         })
+      },
+      resetForm(formName) {  // 重置奖学金充值
+        this.$refs[formName].resetFields();
       },
       recharge(obj) { // 点击每一行的奖学金充值
         this.dialog = true;
+        this.form2.userName = obj.f_phone;  // 用户姓名
+        this.form2.memberId = obj.id;  // id
+        this.form2.score = obj.f_score;  // 奖学金
+        this.form2.f_phone = obj.f_phone;  // 用户手机号
+        this.form2.f_score = obj.f_score;  // 奖学金
       },
       addMemberFn() { // 点击添加会员
         this.$router.push({
