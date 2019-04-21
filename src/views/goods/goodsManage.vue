@@ -32,12 +32,12 @@
         <el-table :data="tableData" border style="width: 100%;">
           <el-table-column prop="id" label="序号"></el-table-column>
           <el-table-column prop="username" label="展示图"></el-table-column>
-          <el-table-column prop="name" label="标题"></el-table-column>
-          <el-table-column prop="name" label="价格"></el-table-column>
+          <el-table-column prop="goodTitle" label="标题"></el-table-column>
+          <el-table-column prop="goodPrice" label="价格"></el-table-column>
           <el-table-column prop="number" label="状态">
             <template slot-scope="scope">
-              <el-tag type="success" v-if="scope.row.status==1">开启</el-tag>
-              <el-tag type="danger" v-if="scope.row.status==2">关闭</el-tag>
+              <el-tag type="success" v-if="scope.row.goodIsEnable">开启</el-tag>
+              <el-tag type="danger" v-if="!scope.row.goodIsEnable">关闭</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="操作" fixed="right">

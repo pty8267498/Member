@@ -116,9 +116,12 @@
     created() {
       if (this.$route.query.id) {
         this.title = '修改商品';
+        this.form.f_editUser = this.$route.query.id;
       } else {
         this.title = '添加商品';
+        this.form.f_editUser = "";
       }
+      this.form.f_createUser = localStorage.getItem("userId");
     },
     mounted() {
 
