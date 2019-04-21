@@ -16,7 +16,7 @@
         <el-button type="success" size="small" @click="isShow=false">推广奖金</el-button>
       </el-col>
       <el-col :span="24">
-        <el-form :model="form" ref="form" size="small" label-width="140px">
+        <el-form :model="form" ref="form" :rules="rules" size="small" label-width="140px">
           <div v-show="isShow">
             <el-form-item label="商品标题" prop="goodTitle">
               <el-input v-model="form.goodTitle" placeholder="商品标题"></el-input>
@@ -76,7 +76,7 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">提交</el-button>
+            <el-button type="primary" @click="onSubmit('form')">提交</el-button>
             <el-button @click="resetForm('form')">重置</el-button>
           </el-form-item>
         </el-form>
@@ -89,10 +89,6 @@
   export default {
     data() {
       return {
-        curPage: 1,   // 当前页
-        pageSize: 10,   // 每页显示条数
-        total: 0,   // 总条数
-        dialog: false,
         isShow: true,   // 默认显示商品信息
         title: '添加商品',
         form: {
@@ -110,21 +106,25 @@
           goldTeam: 0,   //  金牌会员 团队奖金
           silverTeam: 0  // 银牌会员 团队奖金
         },
+        rules: {
+          goodTitle: [{required: true, message: '请输入商品标题', trigger: 'blur'}],
+          goodPrice: [{required: true, message: '请输入商品价格', trigger: 'blur'}],
+        },
         fileList: []
       }
     },
     created() {
       if (this.$route.query.id) {
         this.title = '修改商品';
-        this.form.f_editUser = this.$route.query.id;
+        this.form.id = this.$route.query.id;
       } else {
         this.title = '添加商品';
-        this.form.f_editUser = "";
+        this.form.id = "";
       }
-      this.form.f_createUser = localStorage.getItem("userId");
+      this.form.createUser = localStorage.getItem("userId");
     },
     mounted() {
-
+      this.getGoodsinfo();
     },
     methods: {
       goBack() { // 返回商品列表页
@@ -147,27 +147,40 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-      handleSizeChange(value) {  // 切换每页显示条数
-        this.pageSize = value;
-        this.curPage = 1;
-      },
-      handleCurrentChange(value) {   // 切换当前页
-        this.curPage = value;
-      },
-      onSubmit() {  // 添加/修改商品信息
+      getGoodsinfo() {  // 获取商品信息
         let that = this;
-        this.$axios.post('/Api/good/UpModel', this.form).then(response => {
-          if (response.Code == 200) {
-            that.$message({
-              type: 'success',
-              message: response.Message
-            })
+        this.$axios.post('/Api/good/GetModelById?id='+this.form.id).then(response => {
+          if (response.Code == 200 && response.Success) {
+            that.form = response.Data;
           } else {
             that.$message.error(response.Message);
           }
         }).catch(response => {
           console.log(response);
         })
+      },
+      onSubmit(formName) {  // 添加/修改商品信息
+        let that = this;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/Api/good/UpModel', this.form).then(response => {
+              if (response.Code == 200 && response.Success) {
+                that.$message({
+                  type: 'success',
+                  message: response.Message
+                })
+                that.goBack();
+              } else {
+                that.$message.error(response.Message);
+              }
+            }).catch(response => {
+              console.log(response);
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
       resetForm(formName) {  // 重置表单
         this.$refs[formName].resetFields();

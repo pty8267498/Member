@@ -31,10 +31,14 @@
       <el-col :span="24">
         <el-table :data="tableData" border style="width: 100%;">
           <el-table-column prop="id" label="序号"></el-table-column>
-          <el-table-column prop="username" label="展示图"></el-table-column>
+          <el-table-column prop="goodImg" label="展示图">
+            <template slot-scope="scope">
+              <img :src="scope.row.goodImg" alt="">
+            </template>
+          </el-table-column>
           <el-table-column prop="goodTitle" label="标题"></el-table-column>
           <el-table-column prop="goodPrice" label="价格"></el-table-column>
-          <el-table-column prop="number" label="状态">
+          <el-table-column prop="goodIsEnable" label="状态">
             <template slot-scope="scope">
               <el-tag type="success" v-if="scope.row.goodIsEnable">开启</el-tag>
               <el-tag type="danger" v-if="!scope.row.goodIsEnable">关闭</el-tag>
