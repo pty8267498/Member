@@ -89,12 +89,6 @@
           keyWord: '',
           isEnd: ''  // 是否开启
         },
-        form2: {
-          value: '',
-          type: 1,
-          type2: 1,
-          radio: '1',
-        },
         tableDataAll: [], // 列表返回的商品总数
         tableData: [],  // 表格显示的数据
       }
