@@ -62,7 +62,7 @@
       return {
         curPage: 1,   // 当前页
         pageSize: 10,   // 每页显示条数
-        total: 30,   // 总条数
+        total: 0,   // 总条数
         tableDataAll: [], // 列表返回的商品总数
         tableData: []
       }
