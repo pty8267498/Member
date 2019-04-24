@@ -10,7 +10,7 @@
     <el-row class="contBox">
       <el-col :span="24">
         <h3>清除缓存</h3>
-        <el-button type="primary" size="small">确定</el-button>
+        <el-button type="primary" size="small" @click="showTip()">确定</el-button>
       </el-col>
     </el-row>
   </div>
@@ -27,7 +27,9 @@
 
     },
     methods: {
-
+      showTip(){
+        alert("清除成功!");
+      }
     }
   }
 </script>

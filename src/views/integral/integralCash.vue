@@ -45,7 +45,7 @@
           </el-table-column>
           <el-table-column prop="number" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" v-if="scope.row.status !='不通过'" @click="examineFn(scope.row)">审核</el-button>
+              <el-button type="text" v-if="scope.row.status =='待审核'" @click="examineFn(scope.row)">审核</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -178,6 +178,7 @@
       },
       onSubmit1() {  // 提交审核
         let that = this;
+        debugger;
         this.$axios.post('/Api/applyScore/checkModel',this.form2).then(response => {
           if (response.Code == 200 && response.Success) {
             that.$message({
