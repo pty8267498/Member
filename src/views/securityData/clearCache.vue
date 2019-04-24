@@ -28,7 +28,7 @@
     },
     methods: {
       showTip(){
-        alert("清除成功!");
+        alert("清除成功!"); 
       }
     }
   }
