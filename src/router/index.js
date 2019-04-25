@@ -138,6 +138,12 @@ export default new Router({
             }
           ]
         },{
+          path: '/managerorgan',
+          meta: {
+            title: '会员组织',
+          },
+          component: resolve => require(['../views/securityData/memberOrgan.vue'], resolve),
+        }, {
           path: '/clearCache',
           meta: {
             title: '清除缓存',

@@ -102,6 +102,10 @@ export default {
               icon: "el-icon-star-off",
               index: "manager",
             }, {
+              title: "会员组织",
+              icon: "el-icon-star-off",
+              index: "managerorgan",
+            }, {
               title: "清除缓存",
               icon: "el-icon-star-off",
               index: "clearCache",
