@@ -14,19 +14,18 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">搜索</el-button>
-            <el-button @click="resetForm('formData')">重置</el-button>
+            <el-button @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-col>
       <el-col :span="24">
-        <!-- <tree :folder = "trees" :select = "select"></tree> -->
-        <!-- <tree-list :folder = "treeData" :select = "select"></tree-list> -->
         <el-tree
           :data="treeData"
           default-expand-all
           node-key="id"
           ref="tree"
           highlight-current
+          :render-content="renderContent"
           :props="defaultProps">
         </el-tree>
       </el-col>
@@ -34,11 +33,7 @@
   </div>
 </template>
 <script>
-// import treeList from './treeList';
 export default {
-  // components: {
-  //   treeList
-  // },
   data () {
     return {
       formData: {
@@ -56,8 +51,8 @@ export default {
     this.getTreelist();
   },
   methods: {
-    resetForm (formName) {  // 重置搜索选项
-      this.$refs(formName).resetFields();
+    resetForm () {  // 重置搜索选项
+      this.formData.phone = '';
       this.getTreelist();
     },
     onSubmit () {
@@ -75,12 +70,36 @@ export default {
         console.log(response);
       })
     },
-    select(data){
-      console.log(data);
+    renderContent(h, { node, data, store }) {
+      if (data.gradeName) {
+        return (
+        <span class="custom-tree-node">
+          <b>{data.gradeName}</b>
+          <span>{node.label} </span>
+          <span>{'['+data.ChilendCount} , {data.count+']'}</span>
+        </span>);
+      } else {
+        return (
+        <span class="custom-tree-node">
+          <span>{node.label} </span>
+          <span>{'['+data.ChilendCount} , {data.count+']'}</span>
+        </span>);
+      }
     }
   }
 }
 </script>
-<style scoped lang="less">
+<style lang="less">
 @import '../member/member.less';
+.custom-tree-node {
+  b {
+    font-weight: normal;
+    padding: 2px 5px;
+    background: #67c23a;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 3px;
+    margin-right: 5px;
+  }
+}
 </style>
