@@ -26,7 +26,7 @@
           <el-form-item label="网站Logo">
             <el-upload
               class="upload-demo"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="picUrl"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               :file-list="fileList1"
@@ -106,10 +106,12 @@
         },
         fileList1: [],
         fileList2: [],
+        picUrl: '',  // 图片上传的地址
       }
     },
     created() {
       this.editId = localStorage.getItem('userId');
+      this.picUrl = process.env.API_ROOT+'/Api/Files';
     },
     mounted() {
       this.getFormdata();
